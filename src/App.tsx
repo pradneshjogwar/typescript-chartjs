@@ -7,12 +7,13 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import moment from 'moment';
 
-import {ChartType, TableType} from './types/componentTypes';
-import './App.css';
+import {ChartType, TableType} from './types/types';
+// import './App.css';
 
 
 
 function App() {
+  // Data required for chartjs.
   let chartData : ChartType = {
     labels: [],
     datasets: [
@@ -46,8 +47,12 @@ function App() {
   const [product, setProduct] = useState('product-a');
   const [data, setChartData] = useState(chartData);
 
-  function randomize(range : number){
-    console.log('------product',product)
+/**
+ * Functio to generator array of random numbers.
+ * @param {number} length of random numbers.
+ * @returns {Array}
+ */
+  function randomGenerator(range : number){
     let multipler = (product == 'product-a') ? 100 : 1000;
   
     let arr = [];
@@ -58,6 +63,9 @@ function App() {
     return arr;
   };
 
+  /**
+   * Function to randomize data for table and chart.
+   */
   function randomizeData() {
     // Get number of days
     let oned = 24 * 60 * 60 * 1000;
@@ -67,25 +75,23 @@ function App() {
         oned
     );
 
-    // Create data set of all the days
-    let rangeValues = randomize(days);
+    // Generate random data.
+    let rangeValues = randomGenerator(days);
 
-    // create Dataset for chart.
     let startTempDate = new Date(startDate);
 
-    let labels = [];
-    let tableData = [];
+    let labels = [], tableData = [];
     let lowerRange = deepcopy(rangeValues),
       upperRange = deepcopy(rangeValues);
 
     for (let i = 0; i <= days; i++) {
       let date : Date = deepcopy(startTempDate);
-      // date = date.setDate(startTempDate.getDate() + i);
       labels.push(moment(date.setDate(startTempDate.getDate() + i)).format('yyyy-MM-DD'));
 
       tableData.push({
         id: i,
-        date: new Date(date).getDate(),
+        product: product,
+        date: moment(date.setDate(startTempDate.getDate() + i)).format('yyyy-MM-DD'),
         value: rangeValues[i],
       });
     }
@@ -104,6 +110,7 @@ function App() {
     chartData.datasets[0].data = lowerRange;
     chartData.datasets[1].data = upperRange;
 
+    // Updating state with new data.
     setTableData(tableData)
     setChartData(chartData)
 
@@ -124,6 +131,11 @@ function App() {
       headerName: 'Value',
       width: 150,
       field: 'value', // accessor is the "key" in the data
+    },
+    {
+      headerName: 'Product',
+      width: 150,
+      field: 'product', // accessor is the "key" in the data
     },
   ];
   return (

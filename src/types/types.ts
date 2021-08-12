@@ -22,7 +22,8 @@ export type ChartType = {
 export type TableType = Array<TableData>
 
 export type TableData = {
-  id?:  number;
+  id:  number;
+  product: string;
   data?: number;
   value?: number
 }
